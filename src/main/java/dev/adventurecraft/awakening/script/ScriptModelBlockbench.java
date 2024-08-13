@@ -131,14 +131,14 @@ public class ScriptModelBlockbench extends ScriptModelBase {
         this.prevScaleZ = this.scaleZ;
     }
 
-    public void addBox(int width, int height, int length,
+    public void addBox(float width, float height, float length,
                        int textureOffsetX, int textureOffsetY) {
         this.setSize(width,height,length);
 
         Cuboid cuboid = new Cuboid(textureOffsetX, textureOffsetY);
         ((ExCuboid) cuboid).setTWidth(this.textureWidth);
         ((ExCuboid) cuboid).setTHeight(this.textureHeight);
-        ((ExCuboid) cuboid).addBoxInverted(0,0,0, width, height, length, 0.0F);
+        ((ExCuboid) cuboid).addAccurateBoxInverted(0,0,0, width, height, length, 0.0F);
         this.boxes.add(cuboid);
     }
     public void setBrightness(float brightness){ this.colorRed = this.colorGreen = this.colorBlue = brightness;}
@@ -191,7 +191,7 @@ public class ScriptModelBlockbench extends ScriptModelBase {
         return new ScriptVec3(this.scaleX, this.scaleY, this.scaleZ);
     }
 
-    public void setSize(int sizeX, int sizeY, int sizeZ){
+    public void setSize(float sizeX, float sizeY, float sizeZ){
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.sizeZ = sizeZ;

@@ -86,6 +86,48 @@ public abstract class MixinCuboid implements ExCuboid {
         }
     }
 
+
+    public void addAccurateBoxInverted(float offsetX, float offsetY, float offsetZ, float width, float height, float length, float offsetLength) {
+        float offsetMaxX = offsetX +  width + offsetLength;
+        float offsetMaxY = offsetY +  height + offsetLength;
+        float offsetMaxZ = offsetZ +  length + offsetLength;
+        offsetX -= offsetLength;
+        offsetY -= offsetLength;
+        offsetZ -= offsetLength;
+        if (this.mirror) {
+            float var11 = offsetMaxX;
+            offsetMaxX = offsetX;
+            offsetX = var11;
+        }
+
+        this.corners = new QuadPoint[8];
+        this.corners[0] = new QuadPoint(offsetX, offsetY, offsetZ, 0.0F, 0.0F);
+        this.corners[1] = new QuadPoint(offsetMaxX, offsetY, offsetZ, 0.0F, 8.0F);
+        this.corners[2] = new QuadPoint(offsetMaxX, offsetMaxY, offsetZ, 8.0F, 8.0F);
+        this.corners[3] = new QuadPoint(offsetX, offsetMaxY, offsetZ, 8.0F, 0.0F);
+        this.corners[4] = new QuadPoint(offsetX, offsetY, offsetMaxZ, 0.0F, 0.0F);
+        this.corners[5] = new QuadPoint(offsetMaxX, offsetY, offsetMaxZ, 0.0F, 8.0F);
+        this.corners[6] = new QuadPoint(offsetMaxX, offsetMaxY, offsetMaxZ, 8.0F, 8.0F);
+        this.corners[7] = new QuadPoint(offsetX, offsetMaxY, offsetMaxZ, 8.0F, 0.0F);
+
+        int w = this.tWidth;
+        int h = this.tHeight;
+
+        this.faces = new TexturedQuad[6];
+        this.faces[0] = ExTexturedQuad.create(new QuadPoint[]{this.corners[5], this.corners[1], this.corners[2], this.corners[6]}, this.textureOffsetX + length + width + length, this.textureOffsetY + length + height, this.textureOffsetX + length + width, this.textureOffsetY + length, w, h);
+        this.faces[1] = ExTexturedQuad.create(new QuadPoint[]{this.corners[0], this.corners[4], this.corners[7], this.corners[3]}, this.textureOffsetX + length, this.textureOffsetY + length + height, this.textureOffsetX, this.textureOffsetY + length, w, h);
+        this.faces[2] = ExTexturedQuad.create(new QuadPoint[]{this.corners[5], this.corners[4], this.corners[0], this.corners[1]}, this.textureOffsetX + length + width + width, this.textureOffsetY, this.textureOffsetX + length + width, this.textureOffsetY + length, w, h);
+        this.faces[3] = ExTexturedQuad.create(new QuadPoint[]{this.corners[2], this.corners[3], this.corners[7], this.corners[6]}, this.textureOffsetX + length + width, this.textureOffsetY, this.textureOffsetX + length, this.textureOffsetY + length, w, h);
+        this.faces[4] = ExTexturedQuad.create(new QuadPoint[]{this.corners[1], this.corners[0], this.corners[3], this.corners[2]}, this.textureOffsetX + length + width + length + width, this.textureOffsetY + length + height, this.textureOffsetX + length + width + length, this.textureOffsetY + length, w, h);
+        this.faces[5] = ExTexturedQuad.create(new QuadPoint[]{this.corners[4], this.corners[5], this.corners[6], this.corners[7]}, this.textureOffsetX + length + width, this.textureOffsetY + length + height, this.textureOffsetX + length, this.textureOffsetY + length, w, h);
+
+        if (this.mirror) {
+            for (TexturedQuad face : this.faces) {
+                face.method_1925();
+            }
+        }
+    }
+
     @Override
     public void setTWidth(int value) {
         this.tWidth = value;

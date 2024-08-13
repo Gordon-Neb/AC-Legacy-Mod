@@ -27,4 +27,23 @@ public interface ExTexturedQuad {
     static TexturedQuad create(QuadPoint[] var1, int var2, int var3, int var4, int var5) {
         return create(var1, var2, var3, var4, var5, 64, 32);
     }
+
+    static TexturedQuad create(QuadPoint[] var1, float var2, float var3, float var4, float var5, float var6, float var7) {
+        var quad = new TexturedQuad(var1);
+        float var8 = 0.0015625F;
+        float var9 = 0.003125F;
+        if (var4 < var2) {
+            var8 = -var8;
+        }
+
+        if (var5 < var3) {
+            var9 = -var9;
+        }
+
+        var1[0] = var1[0].method_983( var4 /  var6 - var8,  var3 /  var7 + var9);
+        var1[1] = var1[1].method_983( var2 /  var6 + var8,  var3 /  var7 + var9);
+        var1[2] = var1[2].method_983( var2 /  var6 + var8,  var5 /  var7 - var9);
+        var1[3] = var1[3].method_983( var4 /  var6 - var8,  var5 /  var7 - var9);
+        return quad;
+    }
 }
