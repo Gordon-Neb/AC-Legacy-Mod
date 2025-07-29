@@ -81,11 +81,17 @@ public class AC_Blocks {
     public static final Tile slopes2 = (new AC_BlockSlope(239, Tile.WOOD, 196)).setDescriptionId("slopes");
     public static final Tile slopes3 = (new AC_BlockSlope(240, Tile.COBBLESTONE, 200)).setDescriptionId("slopes");
     public static final Tile slopes4 = (new AC_BlockSlope(241, Tile.COBBLESTONE, 204)).setDescriptionId("slopes");
+    public static final Tile blueprintBlock = new AC_BlockBlueprintSolid(242, 0).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintBlock");
+    public static final Tile blueprintStairs = new AC_BlockBlueprintStairs(243).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintStairs");
+    public static final Tile blueprintFence = new AC_BlockBlueprintFence(244).setDestroyTime(2.0F).setSoundType(Tile.SOUND_WOOD).setDescriptionId("blueprintFence");
+    public static final Tile blueprintHalfStep = new AC_BlockBlueprintHalfStep(245).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintHalfStep");
+    public static final Tile blueprintSlope = new AC_BlockBlueprintSlope(246).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintSlope");
 
     public static void convertACVersion(byte[] blocks) {
         if (blocks == null) {
             return;
         }
+
 
         for (int i = 0; i < blocks.length; ++i) {
             int id = ExChunk.translate256(blocks[i]);
@@ -236,6 +242,12 @@ public class AC_Blocks {
         Item.items[slopes2.id] = (new AC_ItemSubtypes(slopes2.id - 256)).setDescriptionId("slopes");
         Item.items[slopes3.id] = (new AC_ItemSubtypes(slopes3.id - 256)).setDescriptionId("slopes");
         Item.items[slopes4.id] = (new AC_ItemSubtypes(slopes4.id - 256)).setDescriptionId("slopes");
+        Item.items[blueprintBlock.id] = new TileItem(blueprintBlock.id - 256);
+        Item.items[blueprintStairs.id] = new TileItem(blueprintStairs.id - 256);
+        Item.items[blueprintFence.id] = new TileItem(blueprintFence.id - 256);
+        Item.items[blueprintHalfStep.id] = new TileItem(blueprintHalfStep.id - 256);
+        Item.items[blueprintSlope.id] = new TileItem(blueprintSlope.id - 256);
+
 
         for (int i = 0; i < 256; ++i) {
             if (Tile.tiles[i] != null && Item.items[i] == null) {
@@ -252,5 +264,8 @@ public class AC_Blocks {
         ExBlock.neighborLit[Tile.FARMLAND.id] = true;
         ExBlock.neighborLit[Tile.WOOD_STAIRS.id] = true;
         ExBlock.neighborLit[Tile.COBBLESTONE_STAIRS.id] = true;
+
+
+
     }
 }

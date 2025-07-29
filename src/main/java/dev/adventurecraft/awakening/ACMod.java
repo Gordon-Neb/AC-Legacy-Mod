@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.ModContainer;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.minecraft.client.Minecraft;
 import org.spongepowered.include.com.google.gson.*;
 import sun.misc.Unsafe;
 
@@ -30,6 +31,7 @@ public class ACMod implements ModInitializer {
     public static final Logger JS_LOGGER = LoggerFactory.getLogger("JS");
     public static final Logger GL_LOGGER = LoggerFactory.getLogger("GL");
 
+    public static Minecraft MC_INSTANCE;
     public static @Nullable ModContainer MOD_CONTAINER;
     public static @Nullable GitMetadata GIT_META;
 

@@ -89,6 +89,7 @@
     "client.gui.screen.menu.MixinOptionsScreen",
     "client.player.MixinAbstractClientPlayerEntity",
     "client.render.MixinHttpTexture$1",
+    "client.render.MixinTileRenderer",
     "client.resource.language.MixinTranslationStorage",
     "client.texture.MixinTextureManager",
     "container.MixinPlayerContainer",
@@ -105,6 +106,7 @@
     "entity.MixinItemEntity",
     "entity.MixinMob",
     "entity.MixinPathfinderMob",
+    "entity.MixinTileEntity",
     "entity.ai.pathing.MixinEntityPath",
     "entity.ai.pathing.MixinPathNodeNavigator",
     "entity.animal.MixinWolfEntity",
@@ -143,6 +145,7 @@
     "world.MixinWorldProperties",
     "world.chunk.MixinChunk",
     "world.chunk.MixinServerChunkCache",
+    "world.chunk.MixinLevelChunk_AllowBlueprintTE",
     "world.entity.MixinSynchedEntityData",
     "world.gen.MixinBiomeSource",
     "world.level.tile.MixinSignTile",
@@ -152,5 +155,6 @@
     "world.world.biome.MixinForestBiome",
     "world.world.biome.MixinHellBiome",
     "world.world.biome.MixinTaigaBiome"
+
   ]
 }

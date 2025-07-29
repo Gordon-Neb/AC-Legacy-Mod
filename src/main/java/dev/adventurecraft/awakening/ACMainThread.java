@@ -18,6 +18,8 @@ public final class ACMainThread extends Minecraft {
 
     public ACMainThread(int width, int height, boolean fullScreen) {
         super(null, null, null, width, height, fullScreen);
+
+        ACMod.MC_INSTANCE = this;
     }
 
     @Override
@@ -27,7 +29,7 @@ public final class ACMainThread extends Minecraft {
 
     public static File getMapsDirectory() {
         if (mapsDirectory == null) {
-            mapsDirectory = new File(getWorkingDirectory(), "../maps");
+            mapsDirectory = new File("C:\\Users\\geobl\\AppData\\Roaming\\adventurecraft-launcher\\GameFiles\\mc173\\maps");
         }
         return mapsDirectory;
     }

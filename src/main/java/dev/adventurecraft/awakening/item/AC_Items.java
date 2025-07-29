@@ -38,4 +38,6 @@ public class AC_Items {
     public static Item quill = (new AC_ItemQuill(330)).texture(229).setDescriptionId("quill");
     public static Item paste = (new AC_ItemPaste(308)).texture(231).setDescriptionId("paste");
     public static Item nudge = (new AC_ItemNudge(309)).texture(232).setDescriptionId("nudge");
+    public static Item painter = (new AC_ItemPainter(310)).texture(227).setDescriptionId("painter").handEquipped();
+
 }
