@@ -1,10 +1,9 @@
 package dev.adventurecraft.awakening.mixin.client.render.block;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.adventurecraft.awakening.ACMod;
 import dev.adventurecraft.awakening.extension.client.render.ExTesselator;
-import dev.adventurecraft.awakening.tile.AC_BlockOverlay;
-import dev.adventurecraft.awakening.tile.AC_BlockShapes;
-import dev.adventurecraft.awakening.tile.AC_Blocks;
+import dev.adventurecraft.awakening.tile.*;
 import dev.adventurecraft.awakening.tile.entity.AC_TileEntityTree;
 import dev.adventurecraft.awakening.common.AoHelper;
 import dev.adventurecraft.awakening.extension.block.AC_TexturedBlock;
@@ -34,8 +33,10 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(
     value = TileRenderer.class,
@@ -1403,6 +1404,22 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
         Tesselator ts = Tesselator.instance;
         var exTs = (ExTesselator) ts;
         int texture = block.getTexture(this.level, x, y, z, Facing.DOWN);
+
+
+        if (block instanceof IBlueprintBlock) {
+            Level clientLevel = ACMod.MC_INSTANCE.level;
+            if (clientLevel != null) {
+                TileEntity te = clientLevel.getTileEntity(x, y, z);
+                if (te instanceof AC_TileBlueprint) {
+                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
+                    if (customTexture >= 0) {
+                        texture = customTexture;
+                    }
+                }
+            }
+        }
+
+
         double texX = (texture & 15) << 4;
         double texY = texture & 240;
 
@@ -1500,6 +1517,22 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
         Tesselator ts = Tesselator.instance;
         var exTs = (ExTesselator) ts;
         int texture = block.getTexture(this.level, x, y, z, Facing.DOWN);
+
+        // --- BLUEPRINT TEXTURE LOGIC ---
+        if (block instanceof IBlueprintBlock) {
+            Level clientLevel = ACMod.MC_INSTANCE.level;
+            if (clientLevel != null) {
+                TileEntity te = clientLevel.getTileEntity(x, y, z);
+                if (te instanceof AC_TileBlueprint) {
+                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
+                    if (customTexture >= 0) {
+                        texture = customTexture;
+                    }
+                }
+            }
+        }
+        // --- END BLUEPRINT LOGIC ---
+
         double texX = (texture & 15) << 4;
         double texY = texture & 240;
         double u0 = texX / 256.0D;
@@ -2017,6 +2050,24 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
         Tesselator ts = Tesselator.instance;
         int coreMeta = this.level.getData(x, y, z) & 3;
         int coreTexture = block.getTexture(this.level, x, y, z, Facing.DOWN);
+
+        // --- ADD THIS CODE BLOCK START ---
+        // This is the blueprint logic. We check if the slope is a blueprint block.
+        if (block instanceof IBlueprintBlock) {
+            // Use the static instance to get the real client Level.
+            Level clientLevel = ACMod.MC_INSTANCE.level;
+            if (clientLevel != null) {
+                TileEntity te = clientLevel.getTileEntity(x, y, z);
+                if (te instanceof AC_TileBlueprint) {
+                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
+                    if (customTexture >= 0) {
+                        // If we have a custom texture, overwrite the one the method was about to use.
+                        coreTexture = customTexture;
+                    }
+                }
+            }
+        }
+
         double texX = (coreTexture & 15) << 4;
         double texY = coreTexture & 240;
         double u0 = texX / 256.0D;
@@ -2798,6 +2849,35 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
         }
         return true;
     }
+
+    @Inject(
+        method = "tesselateInWorld(Lnet/minecraft/world/level/tile/Tile;III)Z",
+        at = @At("HEAD")
+    )
+    private void preRenderBlueprint(Tile tile, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        if (tile instanceof IBlueprintBlock) {
+            Level clientLevel = ACMod.MC_INSTANCE.level;
+            if (clientLevel != null) {
+                TileEntity te = clientLevel.getTileEntity(x, y, z);
+                if (te instanceof AC_TileBlueprint) {
+                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
+                    if (customTexture >= 0) {
+                        this.fixedTexture = customTexture;
+                    }
+                }
+            }
+        }
+    }
+
+    @Inject(
+        method = "tesselateInWorld(Lnet/minecraft/world/level/tile/Tile;III)Z",
+        at = @At("TAIL")
+    )
+    private void postRenderBlueprint(Tile tile, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        this.fixedTexture = -1;
+    }
+
+
 
     // TODO: what is ModLoader?
     /*

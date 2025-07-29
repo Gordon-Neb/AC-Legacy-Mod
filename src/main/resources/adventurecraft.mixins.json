@@ -89,7 +89,6 @@
     "client.gui.screen.menu.MixinOptionsScreen",
     "client.player.MixinAbstractClientPlayerEntity",
     "client.render.MixinHttpTexture$1",
-    "client.render.MixinTileRenderer",
     "client.resource.language.MixinTranslationStorage",
     "client.texture.MixinTextureManager",
     "container.MixinPlayerContainer",
