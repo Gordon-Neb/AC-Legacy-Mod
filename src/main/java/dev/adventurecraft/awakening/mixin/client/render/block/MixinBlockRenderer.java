@@ -1403,22 +1403,8 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
 
         Tesselator ts = Tesselator.instance;
         var exTs = (ExTesselator) ts;
-        int texture = block.getTexture(this.level, x, y, z, Facing.DOWN);
 
-
-        if (block instanceof IBlueprintBlock) {
-            Level clientLevel = ACMod.MC_INSTANCE.level;
-            if (clientLevel != null) {
-                TileEntity te = clientLevel.getTileEntity(x, y, z);
-                if (te instanceof AC_TileBlueprint) {
-                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
-                    if (customTexture >= 0) {
-                        texture = customTexture;
-                    }
-                }
-            }
-        }
-
+        int texture = (this.fixedTexture >= 0) ? this.fixedTexture : block.getTexture(this.level, x, y, z, Facing.DOWN);
 
         double texX = (texture & 15) << 4;
         double texY = texture & 240;
@@ -1516,22 +1502,9 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
 
         Tesselator ts = Tesselator.instance;
         var exTs = (ExTesselator) ts;
-        int texture = block.getTexture(this.level, x, y, z, Facing.DOWN);
 
-        // --- BLUEPRINT TEXTURE LOGIC ---
-        if (block instanceof IBlueprintBlock) {
-            Level clientLevel = ACMod.MC_INSTANCE.level;
-            if (clientLevel != null) {
-                TileEntity te = clientLevel.getTileEntity(x, y, z);
-                if (te instanceof AC_TileBlueprint) {
-                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
-                    if (customTexture >= 0) {
-                        texture = customTexture;
-                    }
-                }
-            }
-        }
-        // --- END BLUEPRINT LOGIC ---
+        int texture = (this.fixedTexture >= 0) ? this.fixedTexture : block.getTexture(this.level, x, y, z, Facing.DOWN);
+
 
         double texX = (texture & 15) << 4;
         double texY = texture & 240;
@@ -1542,6 +1515,7 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
 
         float b0 = this.level.getBrightness(x, y, z);
         float b1 = this.level.getBrightness(x - 1, y, z + 1);
+
 
         double x1 = x + 1.0D;
         double x2 = minZ + x;
@@ -2049,24 +2023,7 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
     public @Unique boolean renderBlockSlope(Tile block, int x, int y, int z) {
         Tesselator ts = Tesselator.instance;
         int coreMeta = this.level.getData(x, y, z) & 3;
-        int coreTexture = block.getTexture(this.level, x, y, z, Facing.DOWN);
-
-        // --- ADD THIS CODE BLOCK START ---
-        // This is the blueprint logic. We check if the slope is a blueprint block.
-        if (block instanceof IBlueprintBlock) {
-            // Use the static instance to get the real client Level.
-            Level clientLevel = ACMod.MC_INSTANCE.level;
-            if (clientLevel != null) {
-                TileEntity te = clientLevel.getTileEntity(x, y, z);
-                if (te instanceof AC_TileBlueprint) {
-                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
-                    if (customTexture >= 0) {
-                        // If we have a custom texture, overwrite the one the method was about to use.
-                        coreTexture = customTexture;
-                    }
-                }
-            }
-        }
+        int coreTexture = (this.fixedTexture >= 0) ? this.fixedTexture : block.getTexture(this.level, x, y, z, Facing.DOWN);
 
         double texX = (coreTexture & 15) << 4;
         double texY = coreTexture & 240;
@@ -2077,6 +2034,8 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
 
         block.setShape(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         float brightness = block.getBrightness(this.level, x, y, z);
+
+
 
         double x1 = x + 1;
         double z1 = z + 1;
@@ -2856,14 +2815,16 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
     )
     private void preRenderBlueprint(Tile tile, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (tile instanceof IBlueprintBlock) {
-            Level clientLevel = ACMod.MC_INSTANCE.level;
-            if (clientLevel != null) {
-                TileEntity te = clientLevel.getTileEntity(x, y, z);
-                if (te instanceof AC_TileBlueprint) {
-                    int customTexture = ((AC_TileBlueprint) te).overriddenTexture;
-                    if (customTexture >= 0) {
-                        this.fixedTexture = customTexture;
-                    }
+            TileEntity te = this.level.getTileEntity(x, y, z);
+            if (te instanceof AC_TileBlueprint) {
+                AC_TileBlueprint blueprint = (AC_TileBlueprint) te;
+                long customTexture = blueprint.overriddenTexture;
+
+                if (customTexture >= 0L) {
+                    // The chunk renderer has already bound the correct texture sheet (e.g., terrain2.png).
+                    // All we need to do here is override the texture *index* for this specific block.
+                    // The index is stored in the lower 32 bits of our 'long'.
+                    this.fixedTexture = (int) customTexture;
                 }
             }
         }
@@ -2874,6 +2835,8 @@ public abstract class MixinBlockRenderer implements ExBlockRenderer {
         at = @At("TAIL")
     )
     private void postRenderBlueprint(Tile tile, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        // This is crucial to prevent the overridden texture from "bleeding" over to other blocks.
+        // We reset it after the block has finished rendering.
         this.fixedTexture = -1;
     }
 

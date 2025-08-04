@@ -5,6 +5,8 @@ import dev.adventurecraft.awakening.extension.ExClass_66;
 import dev.adventurecraft.awakening.extension.block.ExBlock;
 import dev.adventurecraft.awakening.extension.client.options.ExGameOptions;
 import dev.adventurecraft.awakening.extension.client.util.ExCameraView;
+import dev.adventurecraft.awakening.tile.AC_TileBlueprint;
+import dev.adventurecraft.awakening.tile.IBlueprintBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Chunk;
 import net.minecraft.client.renderer.Tesselator;
@@ -161,26 +163,35 @@ public abstract class MixinClass_66 implements ExClass_66 {
                             }
 
                             Tile block = Tile.tiles[blockId];
-                            if (texId == ((ExBlock) block).getTextureNum()) {
+
+                            // --- START OF THE FIX ---
+                            // Determine the correct texture sheet for the current block.
+                            int blockTextureNum;
+                            if (block instanceof IBlueprintBlock) {
+                                TileEntity te = region.getTileEntity(x, y, z);
+                                if (te instanceof AC_TileBlueprint blueprint && blueprint.overriddenTexture >= 0L) {
+                                    // For blueprints, the sheet is in the upper 32 bits of the stored texture.
+                                    blockTextureNum = (int) (blueprint.overriddenTexture >> 32);
+                                } else {
+                                    // Default if no texture is applied yet.
+                                    blockTextureNum = ((ExBlock) block).getTextureNum(region, x, y, z);
+                                }
+                            } else {
+                                // For all other blocks.
+                                blockTextureNum = ((ExBlock) block).getTextureNum(region, x, y, z);
+                            }
+                            // --- END OF THE FIX ---
+
+                            if (texId == blockTextureNum) { // Compare with the dynamically determined texture sheet.
                                 if (!var14) {
                                     var14 = true;
                                     GL11.glNewList(this.lists + renderPass, GL11.GL_COMPILE);
-
-                                    //GL11.glPushMatrix();
-                                    //this.method_306();
-                                    //float var21 = 1.000001F;
-                                    //GL11.glTranslatef((float) (-this.field_236) / 2.0F, (float) (-this.field_235) / 2.0F, (float) (-this.field_236) / 2.0F);
-                                    //GL11.glScalef(var21, var21, var21);
-                                    //GL11.glTranslatef((float) this.field_236 / 2.0F, (float) this.field_235 / 2.0F, (float) this.field_236 / 2.0F);
                                 }
 
                                 if (!var16) {
                                     var16 = true;
                                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures[texId]);
-
-                                    //((ExTessellator) tesselator).setRenderingChunk(true);
                                     tesselator.begin();
-                                    //tesselator.setOffset(-this.field_231, -this.field_232, -this.field_233);
                                 }
 
                                 if (renderPass == 0 && Tile.isEntityTile[blockId]) {
@@ -193,8 +204,7 @@ public abstract class MixinClass_66 implements ExClass_66 {
                                 int blockRenderPass = block.getRenderLayer();
                                 if (blockRenderPass != renderPass) {
                                     var12 = true;
-                                }
-                                else {
+                                } else {
                                     var13 |= blockRenderer.tesselateInWorld(block, x, y, z);
                                 }
                             }
@@ -209,12 +219,8 @@ public abstract class MixinClass_66 implements ExClass_66 {
             }
 
             if (var14) {
-                //GL11.glPopMatrix();
                 GL11.glEndList();
-                //tesselator.setOffset(0.0D, 0.0D, 0.0D);
-                //((ExTessellator) tesselator).setRenderingChunk(false);
-            }
-            else {
+            } else {
                 var13 = false;
             }
 

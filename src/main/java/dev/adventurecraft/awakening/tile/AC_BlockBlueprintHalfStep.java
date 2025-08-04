@@ -4,23 +4,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelSource;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.tile.Tile;
-import net.minecraft.world.level.tile.TileEntityTile;
-import net.minecraft.world.level.tile.entity.TileEntity;
 import net.minecraft.world.phys.AABB;
 
-public class AC_BlockBlueprintHalfStep extends TileEntityTile implements IBlueprintBlock {
+public class AC_BlockBlueprintHalfStep extends AC_BlockBlueprintBase{
 
     public AC_BlockBlueprintHalfStep(int id) {
-        super(id, 0, Material.WOOD);
-        // FIX: Accessing the static field correctly via the class name 'Tile'.
+        super(id, Material.WOOD);
         Tile.isEntityTile[this.id] = true;
     }
 
-    // FIX: This is a valid override because we now extend TileEntityTile.
-    @Override
-    protected TileEntity newTileEntity() {
-        return new AC_TileBlueprint();
-    }
 
     // --- Logic copied from your AC_BlockHalfStep to ensure correct shape ---
     @Override

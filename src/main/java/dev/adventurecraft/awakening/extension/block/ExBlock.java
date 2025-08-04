@@ -4,6 +4,7 @@ import dev.adventurecraft.awakening.common.AC_DebugMode;
 import dev.adventurecraft.awakening.common.Coord;
 import dev.adventurecraft.awakening.tile.AC_ITriggerBlock;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelSource;
 import net.minecraft.world.level.tile.Tile;
 
 public interface ExBlock extends AC_TexturedBlock, AC_ITriggerBlock {
@@ -37,4 +38,10 @@ public interface ExBlock extends AC_TexturedBlock, AC_ITriggerBlock {
 
         AC_DebugMode.triggerResetActive = previousState;
     }
+
+
+    default int getTextureNum(LevelSource world, int x, int y, int z) {
+        return getTextureNum();
+    }
+
 }

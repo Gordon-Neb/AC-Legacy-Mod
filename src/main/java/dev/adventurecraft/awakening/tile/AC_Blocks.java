@@ -81,7 +81,7 @@ public class AC_Blocks {
     public static final Tile slopes2 = (new AC_BlockSlope(239, Tile.WOOD, 196)).setDescriptionId("slopes");
     public static final Tile slopes3 = (new AC_BlockSlope(240, Tile.COBBLESTONE, 200)).setDescriptionId("slopes");
     public static final Tile slopes4 = (new AC_BlockSlope(241, Tile.COBBLESTONE, 204)).setDescriptionId("slopes");
-    public static final Tile blueprintBlock = new AC_BlockBlueprintSolid(242, 0).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintBlock");
+    public static final Tile blueprintBlock = new AC_BlockBlueprintSolid(242).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintBlock");
     public static final Tile blueprintStairs = new AC_BlockBlueprintStairs(243).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintStairs");
     public static final Tile blueprintFence = new AC_BlockBlueprintFence(244).setDestroyTime(2.0F).setSoundType(Tile.SOUND_WOOD).setDescriptionId("blueprintFence");
     public static final Tile blueprintHalfStep = new AC_BlockBlueprintHalfStep(245).setDestroyTime(2.0F).setSoundType(Tile.SOUND_STONE).setDescriptionId("blueprintHalfStep");

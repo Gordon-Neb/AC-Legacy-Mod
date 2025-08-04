@@ -10,16 +10,11 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 
-public class AC_BlockBlueprintStairs extends TileEntityTile implements IBlueprintBlock {
+public class AC_BlockBlueprintStairs extends AC_BlockBlueprintBase {
 
     public AC_BlockBlueprintStairs(int id) {
-        super(id, 0, Material.WOOD); // Placeholder texture and material
+        super(id,  Material.WOOD); // Placeholder texture and material
         this.isEntityTile[this.id] = true;
-    }
-
-    @Override
-    protected TileEntity newTileEntity() {
-        return new AC_TileBlueprint();
     }
 
     // This is the render ID for the stairs model.

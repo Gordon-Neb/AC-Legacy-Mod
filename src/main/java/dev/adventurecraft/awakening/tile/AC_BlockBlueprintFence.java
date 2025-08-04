@@ -3,19 +3,12 @@ package dev.adventurecraft.awakening.tile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.tile.Tile;
-import net.minecraft.world.level.tile.TileEntityTile;
-import net.minecraft.world.level.tile.entity.TileEntity;
 
-public class AC_BlockBlueprintFence extends TileEntityTile implements IBlueprintBlock {
+public class AC_BlockBlueprintFence extends AC_BlockBlueprintBase {
 
     public AC_BlockBlueprintFence(int id) {
-        super(id, 0, Material.WOOD);
+        super(id, Material.WOOD);
         this.isEntityTile[this.id] = true;
-    }
-
-    @Override
-    protected TileEntity newTileEntity() {
-        return new AC_TileBlueprint();
     }
 
     // This is the render ID for the fence model.

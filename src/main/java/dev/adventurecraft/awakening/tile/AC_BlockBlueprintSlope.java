@@ -5,24 +5,16 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.tile.Tile;
-import net.minecraft.world.level.tile.TileEntityTile;
-import net.minecraft.world.level.tile.entity.TileEntity;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 
-public class AC_BlockBlueprintSlope extends TileEntityTile implements IBlueprintBlock {
+public class AC_BlockBlueprintSlope extends AC_BlockBlueprintBase {
 
     public AC_BlockBlueprintSlope(int id) {
-        super(id, 0, Material.WOOD);
+        super(id, Material.WOOD);
         // FIX: Accessing static field correctly.
         Tile.isEntityTile[this.id] = true;
-    }
-
-    // FIX: Valid override.
-    @Override
-    protected TileEntity newTileEntity() {
-        return new AC_TileBlueprint();
     }
 
     // Copying the essential behavior from your AC_BlockSlope.

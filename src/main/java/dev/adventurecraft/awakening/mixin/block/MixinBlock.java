@@ -155,6 +155,14 @@ public abstract class MixinBlock implements ExBlock {
 
     @Override
     public long getTextureForSideEx(LevelSource view, int x, int y, int z, int side) {
-        return this.getTexture(view, x, y, z, side);
+        // Get the texture index for the specific side and metadata.
+        int textureIndex = this.getTexture(view, x, y, z, side);
+
+        // Get the texture sheet number for this block type from the ExBlock interface.
+        int sheetIndex = this.getTextureNum();
+
+        // Combine them into a long. We store the sheet index in the upper 32 bits
+        // and the texture index in the lower 32 bits. This is the crucial change.
+        return ((long)sheetIndex << 32) | (textureIndex & 0xFFFFFFFFL);
     }
 }
